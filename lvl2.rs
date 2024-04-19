@@ -81,6 +81,7 @@ fn main() {
         .expect("Error reading line")
         .parse::<i32>()
         .expect("Error parsing amount");
+
     while let Some(line) = iter.next() {
         let line = line.expect("Error reading line");
         coins.clear();
@@ -93,12 +94,14 @@ fn main() {
             .expect("Error reading line")
             .expect("Error reading line");
 
+        amounts.clear();
         for amount in line.split_whitespace() {
             amounts.push(amount.parse::<i32>().expect("Error parsing amount"));
         }
 
         let mut temp_amount = amount_num;
         for amount in amounts.clone() {
+            println!("{}", amount);
             for coin in &coins {
                 if amount - coin > 0 && coins.contains(&(amount - coin)) {
                     writeln!(output_file, "{} {}", coin, amount - coin);
