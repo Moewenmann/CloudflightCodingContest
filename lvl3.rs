@@ -79,14 +79,25 @@ fn main() {
         // Base case: no coins needed for amount 0
         fewest_coins[0] = 0;
 
-        // Function to calculate the fewest number of coins needed for each amount
-        for amount in 1..=100 {
-            for coin in &coins {
-                if *coin <= amount {
-                    fewest_coins[amount as usize] = fewest_coins[amount as usize]
-                        .min(fewest_coins[(amount - coin) as usize] + 1);
-                }
+        // Function to calculate the fewest number of coins needed for each amount using backtracking
+        fn backtrack(coins: &[i32], amount: i32, fewest_coins: &mut [i32]) -> i32 {
+            if amount < 0 {
+                return 1000; // Infinity
             }
+            if fewest_coins[amount as usize] != 1000 {
+                return fewest_coins[amount as usize];
+            }
+            let mut min_coins = 1000; // Infinity
+            for &coin in coins {
+                min_coins = min_coins.min(backtrack(coins, amount - coin, fewest_coins) + 1);
+            }
+            fewest_coins[amount as usize] = min_coins;
+            min_coins
+        }
+
+        // Calculate fewest coins for each amount
+        for amount in 1..=100 {
+            backtrack(&coins, amount, &mut fewest_coins);
         }
 
         // Writing the fewest number of coins needed for each amount to the output file
@@ -112,4 +123,3 @@ fn main() {
         }
     }
 }
-
