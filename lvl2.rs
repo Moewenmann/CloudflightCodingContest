@@ -65,7 +65,7 @@ fn main() {
     let reader = BufReader::new(input_file);
 
     // skip the first two lines
-    let mut reader = reader.lines().skip(3);
+    let mut reader = reader.lines().skip(2);
 
     let mut coins = Vec::new();
     let mut amounts = Vec::new();
@@ -75,6 +75,12 @@ fn main() {
 
     // loop over other lines
     let iter = &mut reader;
+    let amount_num = iter
+        .next()
+        .expect("Error reading line")
+        .expect("Error reading line")
+        .parse::<i32>()
+        .expect("Error parsing amount");
     while let Some(line) = iter.next() {
         let line = line.expect("Error reading line");
         coins.clear();
@@ -90,14 +96,20 @@ fn main() {
         for amount in line.split_whitespace() {
             amounts.push(amount.parse::<i32>().expect("Error parsing amount"));
         }
+
+        let mut temp_amount = amount_num;
         for amount in amounts.clone() {
             for coin in &coins {
                 if amount - coin > 0 && coins.contains(&(amount - coin)) {
                     writeln!(output_file, "{} {}", coin, amount - coin);
+                    temp_amount -= 1;
                     break;
                 }
             }
+            if temp_amount == 0 {
+                break;
+            }
         }
-        
+        // writeln!(output_file, "\n");
     }
 }
